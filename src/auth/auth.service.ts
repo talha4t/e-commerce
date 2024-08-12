@@ -19,7 +19,6 @@ export class AuthService {
         const { email, password, name } = dto;
 
         try {
-            // Check if user already exists
             const existingUser = await this.prisma.user.findUnique({ where: { email } });
             if (existingUser) {
                 throw new ConflictException('User already exists');
@@ -32,10 +31,11 @@ export class AuthService {
                     email,
                     password: hashedPassword,
                     name,
+                    role: 'user',
                 },
             });
 
-            const tokens = await this.generateToken(newUser.id, newUser.email);
+            const tokens = await this.generateToken(newUser.id, newUser.email, newUser.role);
 
             await this.hashRefreshToken(newUser.id, tokens.refreshToken);
 
@@ -61,7 +61,7 @@ export class AuthService {
                 throw new ForbiddenException('Invalid password');
             }
     
-            const tokens = await this.generateToken(user.id, user.email);
+            const tokens = await this.generateToken(user.id, user.email, user.role);
     
             await this.hashRefreshToken(user.id, tokens.refreshToken);
     
@@ -142,7 +142,7 @@ export class AuthService {
                 throw new ForbiddenException('Invalid refresh token');
             }
 
-            const tokens = await this.generateToken(user.id, user.email);
+            const tokens = await this.generateToken(user.id, user.email, user.role);
     
             await this.hashRefreshToken(user.id, tokens.refreshToken);
     
@@ -154,9 +154,9 @@ export class AuthService {
         }
     }
 
-    // TODO: generate token
-    async generateToken(userId: number, email: string): Promise<Tokens> {
-        const payload: JwtPayload = { userId, email };
+    // generate token
+    async generateToken(userId: number, email: string, role: string): Promise<Tokens> {
+        const payload: JwtPayload = { userId, email, role };
 
         try {
             const [accessToken, refreshToken] = await Promise.all([
