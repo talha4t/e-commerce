@@ -1,68 +1,74 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# E-Commerce Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Node.js](https://img.shields.io/badge/node.js-v16.13.1-green.svg)
+![NestJS](https://img.shields.io/badge/nestjs-v9.0.0-red.svg)
+![Prisma](https://img.shields.io/badge/prisma-v4.1.1-blue.svg)
+![Postgres](https://img.shields.io/badge/postgres-v14.1-blue.svg)
+![TypeScript](https://img.shields.io/badge/typescript-v4.4.4-blue.svg)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Overview
 
-## Description
+This repository contains the backend for an e-commerce platform built using Node.js, NestJS, Prisma ORM, PostgreSQL, and TypeScript. The project is designed to provide a scalable, efficient, and secure foundation for managing e-commerce operations, including user authentication, product management, shopping cart functionality, and order processing.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Features
 
-## Installation
+- **User Authentication:** Secure authentication using JWT, role-based access control, and Argon2 password hashing.
+- **Product Management:** CRUD operations for products, including filtering, sorting, and pagination.
+- **Shopping Cart:** Add, update, remove items from the cart, and retrieve the current cart status.
+- **Order Management:** Process user orders, track order status, and manage order history.
+- **Database:** PostgreSQL as the relational database with Prisma ORM for seamless database interaction.
+- **Documentation:** Integrated API documentation using Swagger.
 
+## Technologies
+
+- **Node.js**: JavaScript runtime environment
+- **NestJS**: Progressive Node.js framework for building efficient, reliable, and scalable server-side applications
+- **Prisma**: Next-generation ORM that connects to your database with ease
+- **PostgreSQL**: Powerful, open-source object-relational database system
+- **TypeScript**: Typed superset of JavaScript that compiles to plain JavaScript
+- **JWT**: JSON Web Tokens for secure authentication
+- **Argon2**: Advanced password hashing algorithm
+
+## Getting Started
+
+### Prerequisites
+
+- **Node.js** (v16.13.1 or higher)
+- **npm** (v8.1.2 or higher)
+- **PostgreSQL** (v14.1 or higher)
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/talha4t/e-commerce-backend.git
+   cd e-commerce-backend
+   ```
+----
+2. **Install dependencies:**  
+  ```bash
+   npm install
+   ```
+
+---
+3. **Set up environment variables:**  
+Create a `.env` file in the root directory and add your PostgreSQL database credentials:
 ```bash
-$ npm install
+  DATABASE_URL=postgresql://username:password@localhost:5432/dbname?schema=public  
+ACCESS_TOKEN_SECRET=your_access_token_secret
+ACCESS_TOKEN_EXPIRY=3600
+REFRESH_TOKEN_SECRET=your_refresh_token_secret
+REFRESH_TOKEN_EXPIRY=86400
 ```
-
-## Running the app
-
+---
+4. **Set up the database:**  
+Run the following command to apply Prisma migrations and set up the database schema:
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+    npx prisma migrate dev
 ```
-
-## Test
-
+---
+5. **Start the server:**  
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+    npm run start:dev
 ```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-
-## License
-
-Nest is [MIT licensed](LICENSE).
