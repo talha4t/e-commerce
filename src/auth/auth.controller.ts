@@ -49,6 +49,15 @@ export class AuthController {
         );
     }
 
+    // reset password reset
+    // @Public()
+    // @Post('/request-password-reset')
+    // @HttpCode(HttpStatus.OK)
+    // async requestPasswordReset(@Body() { email }: { email: string }) {
+    //     return this.authService.requestPasswordReset(email);
+    // }
+
+    
     //TODO: refresh-token
     @Public()
     @UseGuards(RtGuard)

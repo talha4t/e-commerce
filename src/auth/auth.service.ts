@@ -5,12 +5,15 @@ import * as argon from 'argon2';
 import { Tokens } from "./types";
 import { JwtService } from "@nestjs/jwt";
 import { JwtPayload } from "jsonwebtoken";
+// import { MailerService } from "@nestjs-modules/mailer";
+import * as crypto from 'crypto';
 
 @Injectable()
 export class AuthService {
     constructor(
         private prisma: PrismaService,
         private jwtService: JwtService,
+        /*private mailerService: MailerService*/
     ) { }
     
 
@@ -91,6 +94,39 @@ export class AuthService {
         }
     }
 
+    
+    async refreshTokens(userId: number, refreshToken: string): Promise<Tokens> {
+        console.log('ewww', userId, refreshToken);
+        try {
+            const user = await this.prisma.user.findUnique({
+                where: {
+                    id: userId,
+                },
+            });
+
+            if (!user || !user.hashedRT) {
+                console.error('User not found for UserId:', userId);
+                throw new ForbiddenException('Access Denied');
+            }
+            
+            const rtMatches = await argon.verify(user.hashedRT, refreshToken);
+            
+            if (!rtMatches) {
+                throw new ForbiddenException('Invalid refresh token');
+            }
+            
+            const tokens = await this.generateToken(user.id, user.email, user.role);
+            
+            await this.hashRefreshToken(user.id, tokens.refreshToken);
+            
+            return tokens;
+            
+        } catch (error) {
+            console.error('Error in refreshTokens:', error); 
+            throw new ForbiddenException('Access Denied');
+        }
+    }
+    
     async resetPassword(newPassword: string, resetToken: string) {
         try {
             const user = await this.prisma.user.findFirst({
@@ -109,7 +145,7 @@ export class AuthService {
                 where: { id: user.id },
                 data: {
                     password: hashedPassword,
-                    hashedRT: null,
+                    resetToken: null,
                 },
             });
 
@@ -122,40 +158,40 @@ export class AuthService {
         }
     }
 
-    async refreshTokens(userId: number, refreshToken: string): Promise<Tokens> {
-        console.log('ewww', userId, refreshToken);
-        try {
-            const user = await this.prisma.user.findUnique({
-                where: {
-                    id: userId,
-                },
-            });
+    // reset password reset
+    // async requestPasswordReset(email: string): Promise<void> {
+    //     try {
+    //         const user = await this.prisma.user.findUnique({ where: { email } });
 
-            if (!user || !user.hashedRT) {
-                console.error('User not found for UserId:', userId);
-                throw new ForbiddenException('Access Denied');
-            }
+    //         if (!user) {
+    //             throw new UnauthorizedException('User not found');
+    //         }
 
-            const rtMatches = await argon.verify(user.hashedRT, refreshToken);
+    //         const resetToken = this.generateResetToken();
+    //         await this.prisma.user.update({
+    //             where: { id: user.id },
+    //             data: { resetToken },
+    //         });
 
-            if (!rtMatches) {
-                throw new ForbiddenException('Invalid refresh token');
-            }
+    //         await this.mailerService.sendMail({
+    //             to: email,
+    //             subject: 'Password Reset Request',
+    //             template: './reset-password',
+    //             context: { resetToken },
+    //         });
 
-            const tokens = await this.generateToken(user.id, user.email, user.role);
+    //     } catch (error) {
+    //         throw new InternalServerErrorException('Failed to request password reset');
+    //     }
+    // }
     
-            await this.hashRefreshToken(user.id, tokens.refreshToken);
-    
-            return tokens;
-
-        } catch (error) {
-            console.error('Error in refreshTokens:', error); 
-            throw new ForbiddenException('Access Denied');
-        }
-    }
+    // // generate reset token
+    // private generateResetToken(): string {
+    //     return crypto.randomBytes(32).toString('hex');
+    // }
 
     // generate token
-    async generateToken(userId: number, email: string, role: string): Promise<Tokens> {
+    private async generateToken(userId: number, email: string, role: string): Promise<Tokens> {
         const payload: JwtPayload = { userId, email, role };
 
         try {
@@ -182,7 +218,7 @@ export class AuthService {
     }
 
     // TODO: hash refresh token
-    async hashRefreshToken(userId: number, refreshToken: string) {
+    private async hashRefreshToken(userId: number, refreshToken: string) {
         try {
             const hash = await argon.hash(refreshToken);
 

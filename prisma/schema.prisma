@@ -23,9 +23,10 @@ model User {
   email String @unique
   password String
   hashedRT String?
+  resetToken  String? 
   role String @default("user")
 
-  oders Order[]
+  orders Order[]
   cart Cart?
 }
 
@@ -48,7 +49,7 @@ model Cart {
   userId    Int      @unique
   user      User     @relation(fields: [userId], references: [id])
 
-  products  CartItem[] 
+  cartItems  CartItem[]
 }
 
 model Order {
