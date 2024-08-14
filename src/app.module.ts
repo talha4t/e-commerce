@@ -7,11 +7,12 @@ import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './common/guards';
 import { ProductModule } from './product/product.module';
 import { CartModule } from './cart/cart.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [ ConfigModule.forRoot({
     isGlobal: true,
-  }), AuthModule, ProductModule, CartModule],
+  }), AuthModule, ProductModule, CartModule, OrderModule],
 
   controllers: [],
 

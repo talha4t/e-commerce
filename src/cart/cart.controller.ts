@@ -6,10 +6,10 @@ import { GetCurrentUser, Roles } from "../common/decorators";
 import { User } from "@prisma/client";
 import { CartDto, CartItemDto, UpdateCartDto, RemoveFromCartDto, AddToCartDto } from "./dto";
 
-@ApiTags('cart')
+@ApiTags('api/v1/cart')
 @ApiBearerAuth()
 @UseGuards(AtGuard, RolesGuard)
-@Controller('cart')
+@Controller('api/v1/cart')
 export class CartController {
     constructor(private readonly cartService: CartService) {}
 
