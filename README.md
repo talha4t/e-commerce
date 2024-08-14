@@ -42,8 +42,8 @@ This repository contains the backend for an e-commerce platform built using Node
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/talha4t/e-commerce-backend.git
-   cd e-commerce-backend
+  git clone https://github.com/talha4t/e-commerce-backend.git
+  cd e-commerce-backend
    ```
 ----
 2. **Install dependencies:**  

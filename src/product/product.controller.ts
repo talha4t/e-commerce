@@ -7,7 +7,7 @@ import { ApiBearerAuth } from "@nestjs/swagger";
 import { UpdateProductDto } from "./dto/update-product.dto";
 import { CreateProductDto } from "./dto/create-product.dto";
 
-@Controller('products')
+@Controller('api/v1/products')
 export class ProductController {
     constructor(
         private readonly productService: ProductService,

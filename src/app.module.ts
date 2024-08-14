@@ -6,11 +6,12 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './common/guards';
 import { ProductModule } from './product/product.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [ ConfigModule.forRoot({
     isGlobal: true,
-  }), AuthModule, ProductModule],
+  }), AuthModule, ProductModule, CartModule],
 
   controllers: [],
 
