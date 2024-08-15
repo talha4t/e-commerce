@@ -1,39 +1,30 @@
 # E-Commerce Backend
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Node.js](https://img.shields.io/badge/node.js-v16.13.1-green.svg)
-![NestJS](https://img.shields.io/badge/nestjs-v9.0.0-red.svg)
-![Prisma](https://img.shields.io/badge/prisma-v4.1.1-blue.svg)
-![Postgres](https://img.shields.io/badge/postgres-v14.1-blue.svg)
-![TypeScript](https://img.shields.io/badge/typescript-v4.4.4-blue.svg)
+## Objective
+To develop a scalable and efficient backend system for an e-commerce platform that handles product management, user authentication, shopping cart functionality, and order processing.
 
-## Overview
+## Technologies Used
+- Programming Language: Node.js
+- Framework: NestJS (Recommended)
+- Database: PostgreSQL (Recommended)
+- ORM: Prisma
+- Authentication: JWT (JSON Web Tokens) (Recommended)
+- Additional tools: Git for version control
+- Documentation: Swagger
 
-This repository contains the backend for an e-commerce platform built using Node.js, NestJS, Prisma ORM, PostgreSQL, and TypeScript. The project is designed to provide a scalable, efficient, and secure foundation for managing e-commerce operations, including user authentication, product management, shopping cart functionality, and order processing.
+## How to Run the Project
+1. Clone the repository from GitHub.
+2. Install the dependencies by running `npm install`.
+3. Set up the database by running the migrations using Prisma.
+4. Start the development server using `npm run start:dev`.
+5. Access the Swagger documentation at [localhost:3000/api] to explore the available endpoints.
 
-## Features
+## Scripts
+- `npm run start`: Start the application.
+- `npm run start:dev`: Start the application in development mode.
+- `npm run build`: Build the application for production.
+- `npm run test`: Run the tests.
+- `npm run test:watch`: Run the tests in watch mode.
 
-- **User Authentication:** Secure authentication using JWT, role-based access control, and Argon2 password hashing.
-- **Product Management:** CRUD operations for products, including filtering, sorting, and pagination.
-- **Shopping Cart:** Add, update, remove items from the cart, and retrieve the current cart status.
-- **Order Management:** Process user orders, track order status, and manage order history.
-- **Database:** PostgreSQL as the relational database with Prisma ORM for seamless database interaction.
-- **Documentation:** Integrated API documentation using Swagger.
-
-## Technologies
-
-- **Node.js**: JavaScript runtime environment
-- **NestJS**: Progressive Node.js framework for building efficient, reliable, and scalable server-side applications
-- **Prisma**: Next-generation ORM that connects to your database with ease
-- **PostgreSQL**: Powerful, open-source object-relational database system
-- **TypeScript**: Typed superset of JavaScript that compiles to plain JavaScript
-- **JWT**: JSON Web Tokens for secure authentication
-- **Argon2**: Advanced password hashing algorithm
-
-## Getting Started
-
-### Prerequisites
-
-- **Node.js** (v16.13.1 or higher)
-- **npm** (v8.1.2 or higher)
-- **PostgreSQL** (v14.1 or higher)
+## License
+This project is licensed under the UNLICENSED License.
