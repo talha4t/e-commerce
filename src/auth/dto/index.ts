@@ -1,2 +1,5 @@
 export * from './auth.dto'
 export * from './reset-password.dto'
+export * from './tokens.dto'
+export * from './forget-password.dto'
+export * from './logout.dto'

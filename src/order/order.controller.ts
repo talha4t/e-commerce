@@ -6,7 +6,7 @@ import { CreateOrderDto, UpdateOrderDto } from "./dto";
 import { GetCurrentUser } from "src/common/decorators";
 import { User } from "@prisma/client";
 
-@ApiTags('/api/v1/orders')
+@ApiTags('Orders')
 @ApiBearerAuth()
 @UseGuards(AtGuard, RolesGuard)
 @Controller('/api/v1/orders')

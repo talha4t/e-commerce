@@ -1,12 +1,13 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { ProductService } from "./product.service";
 import { ProductQueryDto } from "./dto/productquery.dto";
-import { AtGuard, RolesGuard } from "src/common/guards";
-import { Roles } from "src/common/decorators";
-import { ApiBearerAuth } from "@nestjs/swagger";
+import { AtGuard, RolesGuard } from "../common/guards";
+import { Roles } from "../common/decorators";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { UpdateProductDto } from "./dto/update-product.dto";
 import { CreateProductDto } from "./dto/create-product.dto";
 
+@ApiTags('Products')
 @Controller('api/v1/products')
 export class ProductController {
     constructor(
@@ -16,16 +17,19 @@ export class ProductController {
     @Post()
     @UseGuards(AtGuard, RolesGuard)
     @Roles('admin')
+    @ApiOperation({ summary: 'Create a new product' })
     async createProduct(@Body() createProductDto: CreateProductDto) {
         return this.productService.createProduct(createProductDto);
     }
 
     @Get()
+    @ApiOperation({ summary: 'Get a list of all products' })
     async getAllProducts(@Query() query: ProductQueryDto) {
         return this.productService.getAllProducts(query);
     }
 
     @Get(':id')
+    @ApiOperation({ summary: 'Get a single product by ID' })
     async getProductById(@Param('id') id: string) {
         return this.productService.getProductById(+id);
     }
@@ -34,6 +38,7 @@ export class ProductController {
     @UseGuards(AtGuard, RolesGuard)
     @Roles('admin')
     @ApiBearerAuth()
+    @ApiOperation({ summary: 'Update an existing product' })
     async updateProduct(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
         return this.productService.updateProduct(+id, updateProductDto);
     }
@@ -41,6 +46,7 @@ export class ProductController {
     @Delete(':id')
     @UseGuards(AtGuard, RolesGuard)
     @Roles('admin')
+    @ApiOperation({ summary: 'Delete a product by ID' })
     async deleteProduct(@Param('id') id: string) {
         return this.productService.deleteProduct(+id);
     }

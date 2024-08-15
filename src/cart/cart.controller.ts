@@ -6,7 +6,7 @@ import { GetCurrentUser, Roles } from "../common/decorators";
 import { User } from "@prisma/client";
 import { CartDto, CartItemDto, UpdateCartDto, RemoveFromCartDto, AddToCartDto } from "./dto";
 
-@ApiTags('api/v1/cart')
+@ApiTags('Carts')
 @ApiBearerAuth()
 @UseGuards(AtGuard, RolesGuard)
 @Controller('api/v1/cart')

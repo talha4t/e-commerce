@@ -1,24 +1,26 @@
-import { ConflictException, ForbiddenException, Injectable, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
+import { 
+    ConflictException, 
+    ForbiddenException, 
+    Injectable, 
+    InternalServerErrorException, 
+    UnauthorizedException 
+} from "@nestjs/common";
 import { AuthDto } from "./dto/auth.dto";
 import { PrismaService } from "../prisma/prisma.service";
 import * as argon from 'argon2';
-import { Tokens } from "./types";
 import { JwtService } from "@nestjs/jwt";
 import { JwtPayload } from "jsonwebtoken";
-// import { MailerService } from "@nestjs-modules/mailer";
 import * as crypto from 'crypto';
+import { TokensDto } from "./dto";
 
 @Injectable()
 export class AuthService {
     constructor(
         private prisma: PrismaService,
         private jwtService: JwtService,
-        /*private mailerService: MailerService*/
     ) { }
     
-
-
-    async register(dto: AuthDto): Promise<Tokens> {
+    async register(dto: AuthDto): Promise<TokensDto> {
         const { email, password, name } = dto;
 
         try {
@@ -44,15 +46,18 @@ export class AuthService {
 
             return tokens;
         } catch (error) {
-            throw new Error('Registration Failed!!');
+            console.error('Registration Error:', error);
+            throw new InternalServerErrorException('Registration Failed!!');
         }
     }
 
 
-    async login(dto: AuthDto): Promise<Tokens> {
+    async login(dto: AuthDto): Promise<TokensDto> {
         try {
             const user = await this.prisma.user.findUnique({
-                where: { email: dto.email },
+                where: { 
+                    email: dto.email 
+                },
             });
     
             if (!user) {
@@ -94,9 +99,76 @@ export class AuthService {
         }
     }
 
+    async forgetPassword(email: string) {
+        try {
+            const user = await this.prisma.user.findUnique(
+                { 
+                    where: { 
+                        email 
+                    } 
+                }
+            );
+
+            if (!user) {
+                throw new UnauthorizedException('User not found');
+            }
+
+            const resetToken = this.generateResetToken();
+            await this.prisma.user.update({
+                where: { 
+                    id: user.id 
+                },
+                data: { 
+                    hashedRT: await argon.hash(resetToken) 
+                },
+            });
+
+            return { resetToken };
+        } catch (error) {
+            throw new InternalServerErrorException('Failed to process password reset request');
+        }
+    }
     
-    async refreshTokens(userId: number, refreshToken: string): Promise<Tokens> {
-        console.log('ewww', userId, refreshToken);
+    async resetPassword(newPassword: string, resetToken: string) {
+        try {
+            const user = await this.prisma.user.findFirst({
+                where: {
+                    hashedRT: {
+                        not: null,
+                    },
+                },
+            });
+    
+            if (!user) {
+                throw new UnauthorizedException('Invalid or expired reset token');
+            }
+    
+            const tokenMatches = await argon.verify(user.hashedRT, resetToken);
+    
+            if (!tokenMatches) {
+                throw new UnauthorizedException('Invalid or expired reset token');
+            }
+    
+            const hashedPassword = await argon.hash(newPassword);
+    
+            await this.prisma.user.update({
+                where: { id: user.id },
+                data: {
+                    password: hashedPassword,
+                    hashedRT: null,
+                },
+            });
+    
+            return {
+                message: 'Password successfully reset',
+            };
+        } catch (error) {
+            console.log(error);
+            throw new InternalServerErrorException('Failed to reset password');
+        }
+    }
+
+    async refreshTokens(userId: number, refreshToken: string): Promise<TokensDto> {
         try {
             const user = await this.prisma.user.findUnique({
                 where: {
@@ -127,71 +199,13 @@ export class AuthService {
         }
     }
     
-    async resetPassword(newPassword: string, resetToken: string) {
-        try {
-            const user = await this.prisma.user.findFirst({
-                where: {
-                    hashedRT: resetToken,
-                },
-            });
-
-            if (!user) {
-                throw new UnauthorizedException('invalid reset token');
-            }
-
-            const hashedPassword = await argon.hash(newPassword);
-
-            await this.prisma.user.update({
-                where: { id: user.id },
-                data: {
-                    password: hashedPassword,
-                    resetToken: null,
-                },
-            });
-
-            return {
-                message: 'password reset successfully',
-            }
-
-        } catch (error) {
-            throw new InternalServerErrorException('Failed to reset password');
-        }
+    // generate reset token
+    private generateResetToken(): string {
+        return crypto.randomBytes(32).toString('hex');
     }
 
-    // reset password reset
-    // async requestPasswordReset(email: string): Promise<void> {
-    //     try {
-    //         const user = await this.prisma.user.findUnique({ where: { email } });
-
-    //         if (!user) {
-    //             throw new UnauthorizedException('User not found');
-    //         }
-
-    //         const resetToken = this.generateResetToken();
-    //         await this.prisma.user.update({
-    //             where: { id: user.id },
-    //             data: { resetToken },
-    //         });
-
-    //         await this.mailerService.sendMail({
-    //             to: email,
-    //             subject: 'Password Reset Request',
-    //             template: './reset-password',
-    //             context: { resetToken },
-    //         });
-
-    //     } catch (error) {
-    //         throw new InternalServerErrorException('Failed to request password reset');
-    //     }
-    // }
-    
-    // // generate reset token
-    // private generateResetToken(): string {
-    //     return crypto.randomBytes(32).toString('hex');
-    // }
-
     // generate token
-    private async generateToken(userId: number, email: string, role: string): Promise<Tokens> {
+    private async generateToken(userId: number, email: string, role: string): Promise<TokensDto> {
         const payload: JwtPayload = { userId, email, role };
 
         try {
@@ -231,5 +245,3 @@ export class AuthService {
         }
     }
 }
-
-//hashed refresh token
