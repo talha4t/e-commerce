@@ -5,10 +5,10 @@ To develop a scalable and efficient backend system for an e-commerce platform th
 
 ## Technologies Used
 - Programming Language: Node.js
-- Framework: NestJS (Recommended)
-- Database: PostgreSQL (Recommended)
+- Framework: NestJS 
+- Database: PostgreSQL
 - ORM: Prisma
-- Authentication: JWT (JSON Web Tokens) (Recommended)
+- Authentication: JWT (JSON Web Tokens) 
 - Additional tools: Git for version control
 - Documentation: Swagger
 
