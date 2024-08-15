@@ -4,7 +4,7 @@
 To develop a scalable and efficient backend system for an e-commerce platform that handles product management, user authentication, shopping cart functionality, and order processing.
 
 ## Technologies Used
-- Programming Language: Node.js
+- Programming Language: TypeScript(nodeJS)
 - Framework: NestJS 
 - Database: PostgreSQL
 - ORM: Prisma
