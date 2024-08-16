@@ -22,7 +22,8 @@ export class AuthController {
         }
     )
     @ApiResponse(
-        { status: 201, 
+        { 
+            status: 201, 
             description: 'User successfully registered', 
             type: TokensDto 
         }
@@ -43,7 +44,7 @@ export class AuthController {
     @Post('/login')
     @ApiOperation(
         { 
-            summary: 'Logout the user' 
+            summary: 'Login the user' 
         }
     )
     @ApiResponse(

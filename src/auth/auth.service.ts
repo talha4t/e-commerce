@@ -21,7 +21,7 @@ export class AuthService {
     ) { }
     
     async register(dto: AuthDto): Promise<TokensDto> {
-        const { email, password, name } = dto;
+        const { email, password, name, role } = dto;
 
         try {
             const existingUser = await this.prisma.user.findUnique({ where: { email } });
@@ -36,7 +36,7 @@ export class AuthService {
                     email,
                     password: hashedPassword,
                     name,
-                    role: 'user',
+                    role: role ?? 'user'
                 },
             });
 
@@ -52,33 +52,38 @@ export class AuthService {
     }
 
 
-    async login(dto: AuthDto): Promise<TokensDto> {
+    async login(dto: AuthDto) {
         try {
-            const user = await this.prisma.user.findUnique({
-                where: { 
-                    email: dto.email 
-                },
-            });
+          const user = await this.prisma.user.findUnique({
+            where: { email: dto.email },
+          });
     
-            if (!user) {
-                throw new ForbiddenException('User not found');
-            }
+          if (!user) {
+            throw new ForbiddenException('Invalid credentials');
+          }
     
-            const passwordMatches = await argon.verify(user.password, dto.password);
-            if (!passwordMatches) { 
-                throw new ForbiddenException('Invalid password');
-            }
+          const passwordMatches = await argon.verify(user.password, dto.password);
     
-            const tokens = await this.generateToken(user.id, user.email, user.role);
+          if (!passwordMatches) {
+            throw new ForbiddenException('Invalid credentials');
+          }
     
-            await this.hashRefreshToken(user.id, tokens.refreshToken);
+          const payload = {
+            userId: user.id,
+            email: user.email,
+            role: user.role,
+          };
     
-            return tokens;
-
+          const tokens = await this.generateToken(payload.userId, payload.email, payload.role);
+    
+          await this.hashRefreshToken(user.id, tokens.refreshToken);
+    
+          return tokens;
+          
         } catch (error) {
-            throw new ForbiddenException('Unable to login');
+          console.error('Error during login:', error);
+          throw new ForbiddenException('Login failed');
         }
-
     }
 
     async logout(userId: number) {

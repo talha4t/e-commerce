@@ -8,21 +8,28 @@ export class CartService {
 
     // ADD
     async addToCart(addToCartDto: AddToCartDto, userId: number): Promise<CartItemDto> {
+        console.log(userId);    
         try {
-            const cart = await this.prisma.cart.findUnique({
-                where: {
-                    userId,
-                },
+            // Ensure the cart exists
+            let cart = await this.prisma.cart.findUnique({
+                where: { userId },
             });
-
+    
             if (!cart) {
-                await this.prisma.cart.create({
-                    data: {
-                        userId,
-                    },
+                cart = await this.prisma.cart.create({
+                    data: { userId },
                 });
             }
-
+    
+            // Ensure the product exists
+            const product = await this.prisma.product.findUnique({
+                where: { id: addToCartDto.productId },
+            });
+    
+            if (!product) {
+                throw new NotFoundException('Product not found');
+            }
+    
             const cartItem = await this.prisma.cartItem.create({
                 data: {
                     cartId: cart.id,
@@ -30,13 +37,14 @@ export class CartService {
                     quantity: addToCartDto.quantity,
                 },
             });
-
+    
             return new CartItemDto(cartItem);
-
         } catch (error) {
-            throw new InternalServerErrorException('error adding item to cart');
+            console.log(error);
+            throw new InternalServerErrorException('Error adding item to cart');
         }
     }
+    
 
     // UPDATE
     async updateCartItem(updateCartDto: UpdateCartDto, userId: number): Promise<CartItemDto> {
@@ -81,7 +89,7 @@ export class CartService {
     // get all
     async getCartItems(userId: number): Promise<CartDto> {
         try {
-            const cart = await this.prisma.cart.findUnique({
+            const cart = await this.prisma.cart.findFirst({
                 where: {
                     userId,
                 },
@@ -100,6 +108,8 @@ export class CartService {
             return new CartDto(cartItemsDto);
 
         } catch (error) {
+            console.log(error);
+            
             throw new InternalServerErrorException('error retrieving cart items');
         }
     }

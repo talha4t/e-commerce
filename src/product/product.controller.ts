@@ -6,6 +6,7 @@ import { Roles } from "../common/decorators";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { UpdateProductDto } from "./dto/update-product.dto";
 import { CreateProductDto } from "./dto/create-product.dto";
+import { AddCategoryDto } from "./dto/add-category.dto";
 
 @ApiTags('Products')
 @Controller('api/v1/products')
@@ -13,8 +14,20 @@ export class ProductController {
     constructor(
         private readonly productService: ProductService,
     ) {}
+
+    @Post('add-category')
+    @UseGuards(AtGuard, RolesGuard)
+    @Roles('admin')
+    @ApiOperation({ summary: 'Add a new category' })
+    async addCategory(@Body() addCategory: AddCategoryDto) {
+        const newCategory = await this.productService.addCategory(addCategory);
+        return {
+            message: 'Category added successfully',
+            data: newCategory,
+        };
+    }
     
-    @Post()
+    @Post('add-products')
     @UseGuards(AtGuard, RolesGuard)
     @Roles('admin')
     @ApiOperation({ summary: 'Create a new product' })
@@ -28,13 +41,13 @@ export class ProductController {
         return this.productService.getAllProducts(query);
     }
 
-    @Get(':id')
+    @Get('/:id')
     @ApiOperation({ summary: 'Get a single product by ID' })
     async getProductById(@Param('id') id: string) {
         return this.productService.getProductById(+id);
     }
 
-    @Patch(':id')
+    @Patch('/:id')
     @UseGuards(AtGuard, RolesGuard)
     @Roles('admin')
     @ApiBearerAuth()
@@ -43,7 +56,7 @@ export class ProductController {
         return this.productService.updateProduct(+id, updateProductDto);
     }
 
-    @Delete(':id')
+    @Delete('/:id')
     @UseGuards(AtGuard, RolesGuard)
     @Roles('admin')
     @ApiOperation({ summary: 'Delete a product by ID' })
