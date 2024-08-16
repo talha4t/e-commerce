@@ -6,7 +6,7 @@ export const GetCurrentUser = createParamDecorator(
 
     const user = request.user;
 
-    return data ? user?.[data] : user;
-    // return user.userId;
+    // return data ? user?.[data] : user;
+    return user.userId;
   },
 );

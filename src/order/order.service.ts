@@ -84,10 +84,10 @@ export class OrderService {
     
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
-                console.log(error);
                 throw new BadRequestException('order creation failed due to invalid data');
             }
-    
+            
+            console.log(error);
             throw new InternalServerErrorException('error creating order');
         }
     }
