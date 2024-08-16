@@ -20,9 +20,14 @@ export class OrderController {
     @Post()
     async createOrder(
         @Body() createOrderDto: CreateOrderDto,
-        @GetCurrentUser() user: User
+        @GetCurrentUser('id') id: string,
     ): Promise<{ orderId: number }> {
-        const orderId = await this.orderService.createOrder(createOrderDto, user.id);
+
+        const userId = parseInt(id, 10);
+
+        console.log('controller', userId);
+        
+        const orderId = await this.orderService.createOrder(createOrderDto, userId);
 
         return {
             orderId,
@@ -35,9 +40,11 @@ export class OrderController {
     })
     @Patch(':id')
     async updateOrder(
-        @Param('id') orderId: number,
+        @Param('id') id: string,
         @Body() updateOrderDto: UpdateOrderDto
     ): Promise<void> {
+        const orderId = parseInt(id, 10);
+
         await this.orderService.updateOrder(orderId, updateOrderDto.status)
     }
 
@@ -46,7 +53,9 @@ export class OrderController {
         summary: 'get order by ID'
     })
     @Get(':id')
-    async getOrderById(@Param('id') orderId: number): Promise<any> {
+    async getOrderById(@Param('id') id: string): Promise<any> {
+        const orderId = parseInt(id, 10);
+
         return this.orderService.getOrderById(orderId);
     }
 

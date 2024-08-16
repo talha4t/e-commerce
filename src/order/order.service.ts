@@ -10,23 +10,27 @@ export class OrderService {
     // ADD
     async createOrder(createOrderDto: CreateOrderDto, userId: number): Promise<number> {
         try {
+            if (!userId) {
+                throw new BadRequestException('userId is required');
+            }
+    
             const cart = await this.prisma.cart.findUnique({
                 where: { userId },
                 include: {
                     cartItems: {
                         include: {
-                            product: true, // ex
+                            product: true,
                         },
                     },
                 },
             });
-
+    
             if (!cart || cart.cartItems.length === 0) {
                 throw new BadRequestException('cart is empty');
             }
-
+    
             const totalPrice = cart.cartItems.reduce((sum, item) => sum + item.quantity * item.product.price, 0);
-
+    
             const order = await this.prisma.order.create({
                 data: {
                     userId,
@@ -44,10 +48,10 @@ export class OrderService {
                     }
                 }
             });
-
+    
             // deduct stock for each product
             await Promise.all(
-                cart.cartItems.map(item => 
+                cart.cartItems.map(item =>
                     this.prisma.product.update({
                         where: {
                             id: item.productId,
@@ -60,21 +64,30 @@ export class OrderService {
                     })
                 )
             );
-
+    
             // clear users cart after order has been placed
-            await this.prisma.cart.delete({
+            // First delete all cart items
+            await this.prisma.cartItem.deleteMany({
                 where: {
-                    userId,
+                    cartId: cart.id,
                 }
             });
-
+    
+            // Then delete the cart
+            await this.prisma.cart.delete({
+                where: {
+                    id: cart.id,
+                }
+            });
+    
             return order.id;
-
+    
         } catch (error) {
             if (error instanceof Prisma.PrismaClientKnownRequestError) {
+                console.log(error);
                 throw new BadRequestException('order creation failed due to invalid data');
             }
-
+    
             throw new InternalServerErrorException('error creating order');
         }
     }
@@ -133,6 +146,8 @@ export class OrderService {
 
             return order;
         } catch (error) {
+            console.log('order id', error);
+
             throw new InternalServerErrorException('error retrieving order by id');
         }
     }
