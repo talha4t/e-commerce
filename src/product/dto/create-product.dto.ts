@@ -4,7 +4,7 @@ import { IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validat
 export class CreateProductDto {
     @ApiProperty({
         description: 'Product name',
-        example: 'Product 1',
+        example: 'Sneakers',
     })
     @IsNotEmpty()
     @IsString()
@@ -12,7 +12,7 @@ export class CreateProductDto {
 
     @ApiProperty({
         description: 'Product description',
-        example: 'Product 1 description',
+        example: 'Comfortable and versatile footwear designed for casual wear or sports activities.',
     })
     @IsOptional()
     @IsString()
@@ -27,14 +27,16 @@ export class CreateProductDto {
     price: number;
 
     @ApiProperty({
-        description: 'Product quantity',
+        description: 'Product quantity available in stock',
+        example: 50,
     })
     @IsNotEmpty()
     @IsInt()
     stock: number;
 
     @ApiProperty({
-        description: 'The ID of the category the product belongs to'
+        description: 'The ID of the category the product belongs to',
+        example: 1,
     })
     @IsNotEmpty()
     @IsInt()

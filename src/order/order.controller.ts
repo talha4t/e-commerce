@@ -55,7 +55,7 @@ export class OrderController {
     @Get(':id')
     async getOrderById(@Param('id') id: string): Promise<any> {
         const orderId = parseInt(id, 10);
-
+        console.log(orderId);
         return this.orderService.getOrderById(orderId);
     }
 
@@ -65,6 +65,7 @@ export class OrderController {
     })
     @Get('history')
     async getOrderHistory(@GetCurrentUser() user: User): Promise<any> {
+        
         return this.orderService.getOrderHistory(user.id);
     }
 

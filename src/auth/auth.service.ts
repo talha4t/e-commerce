@@ -98,6 +98,7 @@ export class AuthService {
                 data: {
                     hashedRT: null,
                 },
+                
             })
         } catch (error) {
             throw new Error('Logout failed'); 

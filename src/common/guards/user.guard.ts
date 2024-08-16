@@ -12,14 +12,15 @@ export class UserGuard implements CanActivate {
         const token = this.extractTokenFromHeader(request);
 
         if (!token) {
-        throw new UnauthorizedException('Token not found');
+            throw new UnauthorizedException('Token not found');
         }
 
         try {
-        const payload = this.jwtService.verify(token);
-        request.user = payload;
+            const payload = this.jwtService.verify(token);
+            request.user = payload;
+
         } catch (error) {
-        throw new UnauthorizedException('Invalid token');
+            throw new UnauthorizedException('Invalid token');
         }
 
         return true;
