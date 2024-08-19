@@ -3,7 +3,7 @@ import { OrderService } from "./order.service";
 import { AtGuard, RolesGuard } from "../common/guards";
 import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { CreateOrderDto, UpdateOrderDto } from "./dto";
-import { GetCurrentUser } from "src/common/decorators";
+import { GetCurrentUser, Roles } from "src/common/decorators";
 import { User } from "@prisma/client";
 
 @ApiTags('Orders')
@@ -38,6 +38,8 @@ export class OrderController {
     @ApiOperation({
         summary: 'update an order status'
     })
+    @UseGuards(RolesGuard)
+    @Roles('admin')
     @Patch(':id')
     async updateOrder(
         @Param('id') id: string,
@@ -48,17 +50,7 @@ export class OrderController {
         await this.orderService.updateOrder(orderId, updateOrderDto.status)
     }
 
-    // get order by ID
-    @ApiOperation({
-        summary: 'get order by ID'
-    })
-    @Get(':id')
-    async getOrderById(@Param('id') id: string): Promise<any> {
-        const orderId = parseInt(id, 10);
-        console.log(orderId);
-        return this.orderService.getOrderById(orderId);
-    }
-
+    
     // history
     @ApiOperation({
         summary: 'get all orders for the current user'
@@ -68,5 +60,16 @@ export class OrderController {
         
         return this.orderService.getOrderHistory(user.id);
     }
+
+    // get order by ID
+    @ApiOperation({
+        summary: 'get order by ID'
+    })
+    @Get(':id')
+    async getOrderById(@Param('id') id: string): Promise<any> {
+        
+        return this.orderService.getOrderById(id);
+    }
+
 
 }

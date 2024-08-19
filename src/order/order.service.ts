@@ -124,34 +124,6 @@ export class OrderService {
         }
     }
 
-    // get order by ID
-    async getOrderById(orderId: number): Promise<any> {
-        try {
-            const order = await this.prisma.order.findUnique({
-                where: {
-                    id: orderId,
-                },
-                include: {
-                    orderItems: {
-                        include: {
-                            product: true,
-                        }
-                    }
-                }
-            });
-
-            if (!order) {
-                throw new NotFoundException('order not found');
-            }
-
-            return order;
-        } catch (error) {
-            console.log('order id', error);
-
-            throw new InternalServerErrorException('error retrieving order by id');
-        }
-    }
-
     // history
     async getOrderHistory(userId: number): Promise<any> {
         try {
@@ -168,13 +140,42 @@ export class OrderService {
                 }
             });
 
-            if (!orders.length) {
+            if (!orders.length || orders.length === 0) {
                 throw new NotFoundException('no orders found for this user');
             }
 
             return orders;
         } catch (error) {
+
             throw new InternalServerErrorException('error retrieving order history');
+        }
+    }
+    
+    // get order by ID
+    async getOrderById(orderId: string): Promise<any> {
+        try {
+            const order = await this.prisma.order.findUnique({
+                where: {
+                    id: Number(orderId),
+                },
+                include: {
+                    orderItems: {
+                        include: {
+                            product: true,
+                        }
+                    }
+                }
+            });
+
+            if (!order) {
+                throw new NotFoundException('order not found');
+            }
+
+            return order;
+        } catch (error) {
+            // console.log('order id', error);
+
+            throw new InternalServerErrorException('error retrieving order by id');
         }
     }
 }
