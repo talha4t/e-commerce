@@ -8,11 +8,19 @@ import { AtGuard } from './common/guards';
 import { ProductModule } from './product/product.module';
 import { CartModule } from './cart/cart.module';
 import { OrderModule } from './order/order.module';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 
 @Module({
-  imports: [ ConfigModule.forRoot({
+  imports: [ 
+    ConfigModule.forRoot({
     isGlobal: true,
-  }), AuthModule, ProductModule, CartModule, OrderModule],
+  }),
+  ThrottlerModule.forRoot([{
+    ttl: 60,
+    limit: 100,
+  }]),
+  
+  AuthModule, ProductModule, CartModule, OrderModule],
 
   controllers: [],
 
@@ -20,7 +28,11 @@ import { OrderModule } from './order/order.module';
     {
       provide: APP_GUARD,
       useClass: AtGuard
-    }
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 
