@@ -8,6 +8,7 @@ import { UpdateProductDto } from "./dto/update-product.dto";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { AddCategoryDto } from "./dto/add-category.dto";
 
+@Roles('admin')
 @ApiTags('Products')
 @Controller('api/v1/products')
 export class ProductController {
@@ -17,7 +18,6 @@ export class ProductController {
 
     @Post('add-category')
     @UseGuards(AtGuard, RolesGuard)
-    @Roles('admin')
     @ApiOperation({ summary: 'Add a new category' })
     async addCategory(@Body() addCategory: AddCategoryDto) {
         const newCategory = await this.productService.addCategory(addCategory);
@@ -29,7 +29,6 @@ export class ProductController {
     
     @Post('add-products')
     @UseGuards(AtGuard, RolesGuard)
-    @Roles('admin')
     @ApiOperation({ summary: 'Create a new product' })
     async createProduct(@Body() createProductDto: CreateProductDto) {
         return this.productService.createProduct(createProductDto);
@@ -49,7 +48,6 @@ export class ProductController {
 
     @Patch('/:id')
     @UseGuards(AtGuard, RolesGuard)
-    @Roles('admin')
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Update an existing product' })
     async updateProduct(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
@@ -58,7 +56,6 @@ export class ProductController {
 
     @Delete('/:id')
     @UseGuards(AtGuard, RolesGuard)
-    @Roles('admin')
     @ApiOperation({ summary: 'Delete a product by ID' })
     async deleteProduct(@Param('id') id: string) {
         return this.productService.deleteProduct(+id);
