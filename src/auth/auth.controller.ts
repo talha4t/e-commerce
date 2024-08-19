@@ -73,7 +73,8 @@ export class AuthController {
         }
     )
     @ApiResponse(
-        { status: 200, 
+        { 
+            status: 200, 
             description: 'User successfully logged out' 
         }
     )
@@ -86,7 +87,12 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     async logout(@Req() req: Request, @Body() dto: LogoutDto) {
         const user = req.user;
-        return this.authService.logout(user['sub']);
+        this.authService.logout(user['sub']);
+
+        return {
+            statusCode: HttpStatus.OK,
+            message: 'Logout successfully',
+        };
     }
 
     // TODO: forget-password

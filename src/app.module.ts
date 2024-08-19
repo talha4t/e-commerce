@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
-import { AuthController } from './auth/auth.controller';
-import { AuthService } from './auth/auth.service';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './common/guards';
@@ -16,8 +14,8 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
     isGlobal: true,
   }),
   ThrottlerModule.forRoot([{
-    ttl: 60,
-    limit: 100,
+    ttl: 10,
+    limit: 2,
   }]),
   
   AuthModule, ProductModule, CartModule, OrderModule],
