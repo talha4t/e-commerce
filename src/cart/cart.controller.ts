@@ -1,4 +1,4 @@
-import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { CartService } from "./cart.service";
 import { AtGuard, RolesGuard } from "../common/guards";
 import { Body, Controller, Delete, Get, Patch, Post, UseGuards } from "@nestjs/common";
@@ -19,11 +19,20 @@ export class CartController {
             summary: 'Add a product to the cart'
         }
     )
+    @ApiResponse({
+        status: 201,
+        description: 'Product successfully added to the cart',
+        type: CartItemDto,
+    })
+    @ApiResponse({
+        status: 400,
+        description: 'Product is out of stock',
+    })
     @UseGuards(AtGuard, RolesGuard)
     @Roles('user')
     @Post('add')
     async addToCart (@Body() addToCartDto: AddToCartDto, @GetCurrentUser('userId') userId: number): Promise<CartItemDto> {
-
+        
         return this.cartService.addToCart(addToCartDto, userId);
     }
 

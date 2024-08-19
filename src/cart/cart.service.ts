@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { AddToCartDto, CartDto, CartItemDto, RemoveFromCartDto, UpdateCartDto } from "./dto";
 
@@ -29,6 +29,10 @@ export class CartService {
             if (!product) {
                 throw new NotFoundException('Product not found');
             }
+
+            if (product.stock <= 0) {
+                throw new BadRequestException('Product is out of stock');
+            }
     
             const cartItem = await this.prisma.cartItem.create({
                 data: {
@@ -41,6 +45,7 @@ export class CartService {
             return new CartItemDto(cartItem);
         } catch (error) {
             console.log(error);
+            
             throw new InternalServerErrorException('Error adding item to cart');
         }
     }
