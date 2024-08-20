@@ -13,7 +13,7 @@ export class AuthDto {
     
     @ApiProperty({
         description: 'The email address of the user', 
-        example: 'mahmdutalha80@gmail.com' 
+        example: 'mahmudtalha80@gmail.com' 
     })
     @IsEmail()
     @IsNotEmpty()
