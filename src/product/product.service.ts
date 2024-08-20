@@ -1,13 +1,17 @@
-import { HttpException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { ProductQueryDto } from "./dto/productquery.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
 import { AddCategoryDto } from "./dto/add-category.dto";
-
+import { CloudinaryService } from "src/config/cloudinary.config";
+import * as fs from "fs";
 @Injectable()
 export class ProductService {
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly cloudinaryService: CloudinaryService
+    ) {}
 
     async addCategory(addCategoryDto: AddCategoryDto) {
         const { name, description } = addCategoryDto;
@@ -26,22 +30,43 @@ export class ProductService {
         }
     }
 
-    async createProduct(createProductDto: CreateProductDto) {
+    async createProduct(
+        createProductDto: CreateProductDto, 
+        image?: Express.Multer.File
+    ) {
         try {
             const category = await this.prisma.category.findUnique({
                 where: { id: createProductDto.categoryId },
             });
-    
+            
             if (!category) {
                 throw new NotFoundException(`Category with ID ${createProductDto.categoryId} not found`);
             }
-    
+            
+            let imageUrl: string | null = null;
+
+            if (image) {
+                
+                const localFilePath = image.path;
+                if (!fs.existsSync(localFilePath)) {
+                    throw new InternalServerErrorException('file not found in local path');
+                }
+                
+                const uploadResult = await this.cloudinaryService.uploadImage(image.path);
+
+                imageUrl = uploadResult;
+            }
+
             return await this.prisma.product.create({
-                data: createProductDto,
+                data: {
+                    ...createProductDto,
+                    imageUrl,
+                },
             });
 
         } catch (error) {
             console.log(error);
+
             throw new InternalServerErrorException('Failed to create product');
         }
     }

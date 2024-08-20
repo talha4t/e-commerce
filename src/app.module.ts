@@ -7,6 +7,7 @@ import { ProductModule } from './product/product.module';
 import { CartModule } from './cart/cart.module';
 import { OrderModule } from './order/order.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { CloudinaryService } from './config/cloudinary.config';
 
 @Module({
   imports: [ 
@@ -31,6 +32,8 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
+    
+    CloudinaryService
   ],
 })
 
