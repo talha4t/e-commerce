@@ -31,7 +31,10 @@ export class CartController {
     @UseGuards(AtGuard, RolesGuard)
     @Roles('user')
     @Post('add')
-    async addToCart (@Body() addToCartDto: AddToCartDto, @GetCurrentUser('userId') userId: number): Promise<CartItemDto> {
+    async addToCart(
+        @Body() addToCartDto: AddToCartDto, 
+        @GetCurrentUser('userId') userId: number
+    ): Promise<CartItemDto> {
         
         return this.cartService.addToCart(addToCartDto, userId);
     }

@@ -8,6 +8,7 @@ import { CartModule } from './cart/cart.module';
 import { OrderModule } from './order/order.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { CloudinaryService } from './config/cloudinary.config';
+import { WishlistModule } from './wishlist/wishlist.module';
 
 @Module({
   imports: [ 
@@ -19,7 +20,7 @@ import { CloudinaryService } from './config/cloudinary.config';
     limit: 2,
   }]),
   
-  AuthModule, ProductModule, CartModule, OrderModule],
+  AuthModule, ProductModule, CartModule, OrderModule, WishlistModule],
 
   controllers: [],
 

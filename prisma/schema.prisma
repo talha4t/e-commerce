@@ -23,7 +23,8 @@ model User {
   tokenVersion Int @default(0)
   
   orders Order[]
-  cart Cart?
+  carts Cart[]
+  wishlists Wishlist[]
 }
 
 model Product {
@@ -39,14 +40,16 @@ model Product {
   
   orderItems  OrderItem[]
   cartItems   CartItem[]
+  wishlists    Wishlist[]
 }
 
 model Cart {
   id        Int      @id @default(autoincrement())
   userId    Int      @unique
+  cartItems  CartItem[]
+
   user      User     @relation(fields: [userId], references: [id])
 
-  cartItems  CartItem[]
 }
 
 model Order {
@@ -91,4 +94,15 @@ model CartItem {
 
   cart      Cart     @relation(fields: [cartId], references: [id])
   product   Product  @relation(fields: [productId], references: [id])
+}
+
+model Wishlist {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
+
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId])
 }

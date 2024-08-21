@@ -6,6 +6,7 @@ import { UpdateProductDto } from "./dto/update-product.dto";
 import { AddCategoryDto } from "./dto/add-category.dto";
 import { CloudinaryService } from "src/config/cloudinary.config";
 import * as fs from "fs";
+
 @Injectable()
 export class ProductService {
     constructor(
