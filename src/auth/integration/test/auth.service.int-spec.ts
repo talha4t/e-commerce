@@ -33,7 +33,7 @@ describe("AuthService", () => {
         email: "testpick@aaa.com",
         password: "56",
         name: "testUser",
-        role: "user",
+        role: "admin",
       };
       const hashedPassword = await argon.hash(dto.password);
 
@@ -56,7 +56,7 @@ describe("AuthService", () => {
         email: "testpick@aaa.com",
         password: "56",
         name: "testUser",
-        role: "user",
+        role: "admin",
       };
 
       prisma.user.findUnique = jest.fn().mockResolvedValue({
@@ -80,7 +80,7 @@ describe("AuthService", () => {
         id: 1,
         email: dto.email,
         password: hashedPassword,
-        role: "user",
+        role: "admin",
       };
 
       prisma.user.findUnique = jest.fn().mockResolvedValue(user);
@@ -103,7 +103,7 @@ describe("AuthService", () => {
         id: 1,
         email: dto.email,
         password: await argon.hash("password"),
-        role: "user",
+        role: "admin",
       });
       jest.spyOn(argon, "verify").mockResolvedValue(false);
 

@@ -12,7 +12,10 @@ import {
   RemoveFromCartDto,
   UpdateCartDto,
 } from "./dto";
+import { Roles } from "src/common/decorators";
 
+@Roles("admin")
+@Roles("user")
 @Injectable()
 export class CartService {
   constructor(private readonly prisma: PrismaService) {}
