@@ -49,7 +49,7 @@ jobs:
           echo "DATABASE_URL=postgresql://postgres:1234@localhost:5432/e-commerce" >> $GITHUB_ENV
 
       - name: Run Prisma Migrate
-        run: npx prisma migrate deploy
+        run: npx prisma migrate dev
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
 
