@@ -6,14 +6,8 @@ import { AdminGuard, UserGuard } from "src/common/guards";
 import { CloudinaryService } from "src/config/cloudinary.config";
 
 @Module({
-    imports: [JwtModule.register({})],
-    controllers: [ProductController],
-    providers: [
-        ProductService, 
-        UserGuard, 
-        AdminGuard,
-        CloudinaryService,
-    ]
-
+  imports: [JwtModule.register({})],
+  controllers: [ProductController],
+  providers: [ProductService, UserGuard, AdminGuard, CloudinaryService],
 })
 export class ProductModule {}

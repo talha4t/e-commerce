@@ -10,6 +10,7 @@ import { UpdateProductDto } from "./dto/update-product.dto";
 import { AddCategoryDto } from "./dto/add-category.dto";
 import { CloudinaryService } from "src/config/cloudinary.config";
 import * as fs from "fs";
+import redisClient from "../redis.client";
 
 @Injectable()
 export class ProductService {
@@ -76,19 +77,16 @@ export class ProductService {
     }
   }
 
-  // retrieve all products with optional filtering and pagination
+  // retrieve all products with optional filtering
   async getAllProducts(query: ProductQueryDto) {
+    const cachedData = await redisClient.get("products");
+    if (cachedData) {
+      return JSON.parse(cachedData);
+    }
+
     try {
-      const {
-        name,
-        description,
-        category,
-        minPrice,
-        maxPrice,
-        sortDirection,
-        page = 1,
-        limit = 10,
-      } = query;
+      const { name, description, category, minPrice, maxPrice, sortDirection } =
+        query;
 
       const whereClause: any = {};
 
@@ -113,16 +111,19 @@ export class ProductService {
         }
       });
 
-      return await this.prisma.product.findMany({
+      const products = await this.prisma.product.findMany({
         where: whereClause,
         orderBy: {
-          price: sortDirection === "asc" ? "asc" : "desc",
+          categoryId: sortDirection === "desc" ? "desc" : "desc",
         },
-        skip: (page - 1) * limit,
-        take: limit,
       });
+
+      await redisClient.set("products", JSON.stringify(products));
+      await redisClient.expire("products", 30);
+
+      return products;
     } catch (error) {
-      throw new InternalServerErrorException("Failed to retrieve products"); // Comment: Added error handling
+      throw new InternalServerErrorException("Failed to retrieve products");
     }
   }
 
@@ -141,7 +142,7 @@ export class ProductService {
 
       return product;
     } catch (error) {
-      throw new NotFoundException("Failed to retrieve product"); // Comment: Added error handling
+      throw new NotFoundException("Failed to retrieve product");
     }
   }
 
@@ -152,7 +153,7 @@ export class ProductService {
         where: {
           id,
         },
-        data: updateProductDto, // Comment: Fixed UpdateProductDto usage
+        data: updateProductDto,
       });
 
       if (!product) {
@@ -161,7 +162,7 @@ export class ProductService {
 
       return product;
     } catch (error) {
-      throw new InternalServerErrorException("Failed to update product"); // Comment: Added error handling
+      throw new InternalServerErrorException("Failed to update product");
     }
   }
 
@@ -178,7 +179,7 @@ export class ProductService {
 
       return product;
     } catch (error) {
-      throw new InternalServerErrorException("Failed to delete product"); // Comment: Added error handling
+      throw new InternalServerErrorException("Failed to delete product");
     }
   }
 }
