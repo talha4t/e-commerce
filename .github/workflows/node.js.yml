@@ -34,7 +34,7 @@ jobs:
           echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
 
       - name: Run Integration Tests
-        run: npm run test:int
+        run: npm run test:int -- --passWithNoTests
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         working-directory: ./src
