@@ -32,6 +32,11 @@ jobs:
       - name: Set up ENV Variables
         run: echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
 
+      - name: Run Prisma Migrations
+        run: npx dotenv -e .env -- prisma migrate reset --force --skip-seed
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
       - name: Run Integration Tests
         run: npm run test:int
         working-directory: ./src
