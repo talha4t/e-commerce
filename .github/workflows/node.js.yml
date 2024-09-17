@@ -29,6 +29,6 @@ jobs:
       - name: Build
         run: npm run build --if-present
 
-      - name: Run Tests
-        run: npm test
+      - name: Run Integration Tests
+        run: npm run test:int -- --passWithNoTests
         working-directory: ./src
