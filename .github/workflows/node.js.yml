@@ -30,10 +30,11 @@ jobs:
         run: npm run build
 
       - name: Set up ENV Variables
-        run: echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+        run: |
+          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
 
-      - name: Run Prisma Migrations
-        run: npx dotenv -e .env -- prisma migrate reset --force --skip-seed
+      - name: Run Prisma Migrate Reset
+        run: npx prisma migrate reset --force --skip-seed
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
