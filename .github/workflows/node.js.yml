@@ -27,8 +27,13 @@ jobs:
         run: npm ci
 
       - name: Build
-        run: npm run build --if-present
+        run: npm run build
+
+      - name: Set up ENV Variables
+        run: echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
 
       - name: Run Integration Tests
-        run: npm run test:int -- --passWithNoTests
+        run: npm run test:int
         working-directory: ./src
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
