@@ -1,0 +1,42 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22" # Replace with your Node.js version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Run lint
+        run: npm run lint # Ensure you have a lint script in package.json
+
+      - name: Build
+        run: npm run build # Ensure you have a build script in package.json
+
+      - name: Upload coverage reports
+        if: success() && github.event_name == 'push'
+        uses: codecov/codecov-action@v3
+        with:
+          files: coverage/**/*.json # Adjust path to your coverage reports
