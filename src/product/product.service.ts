@@ -114,7 +114,7 @@ export class ProductService {
       const products = await this.prisma.product.findMany({
         where: whereClause,
         orderBy: {
-          categoryId: sortDirection === "desc" ? "desc" : "desc",
+          categoryId: sortDirection === "desc" ? "desc" : "asc",
         },
       });
 

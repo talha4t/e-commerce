@@ -1,16 +1,12 @@
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { CreateOrderDto } from "./dto";
 import { Prisma } from "@prisma/client";
-import { Roles } from "src/common/decorators";
 
-@Roles("admin")
-@Roles("user")
 @Injectable()
 export class OrderService {
   constructor(private readonly prisma: PrismaService) {}

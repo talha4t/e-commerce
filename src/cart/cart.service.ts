@@ -12,10 +12,7 @@ import {
   RemoveFromCartDto,
   UpdateCartDto,
 } from "./dto";
-import { Roles } from "src/common/decorators";
 
-@Roles("admin")
-@Roles("user")
 @Injectable()
 export class CartService {
   constructor(private readonly prisma: PrismaService) {}
@@ -49,6 +46,12 @@ export class CartService {
 
       if (product.stock <= 0) {
         throw new BadRequestException("Product is out of stock");
+      }
+
+      if (addToCartDto.quantity > product.stock) {
+        throw new BadRequestException(
+          "Requested quantity exceeds available stock"
+        );
       }
 
       const cartItem = await this.prisma.cartItem.create({
@@ -120,7 +123,11 @@ export class CartService {
           userId,
         },
         include: {
-          cartItems: true,
+          cartItems: {
+            include: {
+              product: true,
+            },
+          },
         },
       });
 
@@ -128,9 +135,14 @@ export class CartService {
         throw new NotFoundException("cart not found");
       }
 
+      // Calculate the total price of the items in the cart
+      const totalPrice = cart.cartItems.reduce((total, cartItem) => {
+        return total + cartItem.quantity * cartItem.product.price;
+      }, 0);
+
       const cartItemsDto = cart.cartItems.map((item) => new CartItemDto(item));
 
-      return new CartDto(cartItemsDto);
+      return new CartDto(cartItemsDto, totalPrice);
     } catch (error) {
       console.log(error);
 
