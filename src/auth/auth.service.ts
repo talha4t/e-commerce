@@ -22,7 +22,6 @@ export class AuthService {
 
   async register(dto: AuthDto): Promise<TokensDto> {
     const { email, password, name, role } = dto;
-    let a = 0;
 
     try {
       const existingUser = await this.prisma.user.findUnique({
