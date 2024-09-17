@@ -49,12 +49,14 @@ jobs:
           echo "DATABASE_URL=postgresql://postgres:1234@localhost:5432/e-commerce" >> $GITHUB_ENV
 
       - name: Run Prisma Migrate
-        run: npx prisma migrate dev
+        run: npx prisma migrate deploy
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
 
       - name: Run Integration Tests
         run: npm run test:int -- --passWithNoTests
+        echo "Integration tests completed."
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
         working-directory: ./src
+        timeout-minutes: 5
