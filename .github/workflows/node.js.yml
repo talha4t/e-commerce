@@ -55,8 +55,6 @@ jobs:
 
       - name: Run Integration Tests
         run: npm run test:int -- --passWithNoTests
-        run: |
-          echo "Integration tests completed."
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
         working-directory: ./src
