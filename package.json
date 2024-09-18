@@ -21,7 +21,7 @@
     "prisma": "prisma",
     "migrate:dev": "prisma migrate dev --create-only",
     "pretest:int": "dotenv -e .env -- prisma migrate reset --force",
-    "test:int": "dotenv -e .env -- jest -i --no-cache --watch --config jest-int.json"
+    "test:int": "dotenv -e .env -- jest --runInBand -i --no-cache --watch --config jest-int.json"
   },
   "dependencies": {
     "@jest/test-sequencer": "^29.7.0",

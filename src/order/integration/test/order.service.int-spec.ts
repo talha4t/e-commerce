@@ -39,7 +39,6 @@ describe("OrderService Integration Tests", () => {
       const userId = 1;
       const createOrderDto: CreateOrderDto = {
         productId: [1, 2],
-        totalPrice: 100,
         address: "Ishan Gopalpur, Faridpur Sadar, Faridpur",
         contactNumber: "+8801516516405",
       };
@@ -72,7 +71,6 @@ describe("OrderService Integration Tests", () => {
       expect(prismaService.order.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
           userId,
-          totalPrice: createOrderDto.totalPrice,
           status: "pending",
           address: createOrderDto.address,
           contactNumber: createOrderDto.contactNumber,
@@ -101,7 +99,6 @@ describe("OrderService Integration Tests", () => {
       const userId = 1;
       const createOrderDto: CreateOrderDto = {
         productId: [1, 2],
-        totalPrice: 100,
         address: "Ishan Gopalpur, Faridpur Sadar, Faridpur",
         contactNumber: "+8801516516405",
       };

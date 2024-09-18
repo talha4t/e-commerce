@@ -8,5 +8,6 @@
   },
   "moduleNameMapper": {
     "src/(.*)": "<rootDir>/src/$1"
-  }
+  },
+  "testSequencer": "<rootDir>/src/custom-sequencer.ts"
 }

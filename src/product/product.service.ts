@@ -49,27 +49,17 @@ export class ProductService {
         );
       }
 
-      let imageUrl: string | null = null;
-
-      if (image) {
-        const localFilePath = image.path;
-        if (!fs.existsSync(localFilePath)) {
-          throw new InternalServerErrorException(
-            "file not found in local path"
-          );
-        }
-
-        const uploadResult = await this.cloudinaryService.uploadImage(
-          image.path
-        );
-
-        imageUrl = uploadResult;
-      }
+      // Comment out image upload functionality
+      // let imageUrl: string | null = null;
+      // if (image) {
+      //   const uploadResult = await this.cloudinaryService.uploadImage(image.path);
+      //   imageUrl = uploadResult;
+      // }
 
       return await this.prisma.product.create({
         data: {
           ...createProductDto,
-          imageUrl,
+          // imageUrl, // Comment out this line
         },
       });
     } catch (error) {

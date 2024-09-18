@@ -7,9 +7,7 @@ import {
   Patch,
   Post,
   Query,
-  UploadedFile,
   UseGuards,
-  UseInterceptors,
 } from "@nestjs/common";
 import { ProductService } from "./product.service";
 import { ProductQueryDto } from "./dto/productquery.dto";
@@ -19,8 +17,6 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { UpdateProductDto } from "./dto/update-product.dto";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { AddCategoryDto } from "./dto/add-category.dto";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { multerOptions } from "../common/multer.common";
 
 @Roles("admin")
 @ApiTags("Products")
@@ -41,13 +37,13 @@ export class ProductController {
 
   @Post("create-products")
   @UseGuards(AtGuard, RolesGuard)
-  @UseInterceptors(FileInterceptor("image", multerOptions))
+  // Remove @UseInterceptors(FileInterceptor("image", multerOptions))
   @ApiOperation({ summary: "Create a new product" })
   async createProduct(
-    @Body() createProductDto: CreateProductDto,
-    @UploadedFile() image: Express.Multer.File
+    @Body() createProductDto: CreateProductDto
+    // Remove @UploadedFile() image: Express.Multer.File
   ) {
-    return this.productService.createProduct(createProductDto, image);
+    return this.productService.createProduct(createProductDto);
   }
 
   @Get()

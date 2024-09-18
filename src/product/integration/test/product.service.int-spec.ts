@@ -87,7 +87,7 @@ describe("Product Service Integration Test", () => {
   });
 
   describe("createProduct", () => {
-    it("should create a new product with image", async () => {
+    it("should create a new product without image", async () => {
       const createProductDto: CreateProductDto = {
         name: "Test Product",
         description: "Test Description",
@@ -95,52 +95,27 @@ describe("Product Service Integration Test", () => {
         stock: 100,
         categoryId: 1,
       };
-      const mockImage: Express.Multer.File = {
-        fieldname: "image",
-        originalname: "test.jpg",
-        encoding: "7bit",
-        mimetype: "image/jpeg",
-        buffer: Buffer.from("test"),
-        size: 1024,
-        destination: "/tmp",
-        filename: "test.jpg",
-        path: "/tmp/test.jpg",
-        stream: null,
-      };
       const mockProduct = {
         id: 1,
         ...createProductDto,
-        imageUrl: "https://example.com/image.jpg",
       };
 
       (prismaService.category.findUnique as jest.Mock).mockResolvedValue({
         id: 1,
         name: "Test Category",
       });
-      (cloudinaryService.uploadImage as jest.Mock).mockResolvedValue(
-        "https://example.com/image.jpg"
-      );
       (prismaService.product.create as jest.Mock).mockResolvedValue(
         mockProduct
       );
 
-      const result = await productService.createProduct(
-        createProductDto,
-        mockImage
-      );
+      const result = await productService.createProduct(createProductDto);
 
       expect(result).toEqual(mockProduct);
       expect(prismaService.category.findUnique).toHaveBeenCalledWith({
         where: { id: createProductDto.categoryId },
       });
-      expect(cloudinaryService.uploadImage).toHaveBeenCalledWith(
-        mockImage.path
-      );
       expect(prismaService.product.create).toHaveBeenCalledWith({
-        data: {
-          ...createProductDto,
-          imageUrl: "https://example.com/image.jpg",
-        },
+        data: createProductDto,
       });
     });
 
@@ -148,7 +123,7 @@ describe("Product Service Integration Test", () => {
       const createProductDto: CreateProductDto = {
         name: "Test Product",
         description: "Test Description",
-        price: 10.99,
+        price: 1099,
         stock: 100,
         categoryId: 999,
       };
@@ -167,12 +142,10 @@ describe("Product Service Integration Test", () => {
         name: "Test",
         minPrice: 5,
         maxPrice: 15,
-        page: 1,
-        limit: 10,
       };
       const mockProducts = [
-        { id: 1, name: "Test Product 1", price: 9.99 },
-        { id: 2, name: "Test Product 2", price: 14.99 },
+        { id: 1, name: "Test Product 1", price: 90 },
+        { id: 2, name: "Test Product 2", price: 19 },
       ];
 
       (prismaService.product.findMany as jest.Mock).mockResolvedValue(
@@ -188,8 +161,9 @@ describe("Product Service Integration Test", () => {
             name: { contains: "Test", mode: "insensitive" },
             price: { gte: 5, lte: 15 },
           }),
-          skip: 0,
-          take: 10,
+          orderBy: {
+            categoryId: "asc",
+          },
         })
       );
     });

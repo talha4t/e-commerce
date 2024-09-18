@@ -54,6 +54,8 @@ export class OrderService {
               quantity: item.quantity,
               price: item.product.price,
               productDescription: item.product.description,
+              // Commented out image uploader
+              // productImage: item.product.image,
             })),
           },
         },
