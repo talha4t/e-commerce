@@ -105,8 +105,8 @@ To run the application using Docker:
 
 2. Build and run the application:
    ```
-   docker build -t e-commerce-backend .
-   docker run -p 3000:3000 --env-file .env e-commerce-backend
+   docker build -t e-commerce .
+   docker run -p 3000:3000 --env-file .env e-commerce
    ```
 
 ## CI/CD
