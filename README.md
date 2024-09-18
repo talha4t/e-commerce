@@ -33,7 +33,7 @@ Before you begin, ensure you have the following installed:
 1. Clone the repository:
 
    ```
-   git clone https://github.com/your-username/e-commerce-backend.git
+   git clone https://github.com/talha4t/e-commerce-backend.git
    cd e-commerce-backend
    ```
 
@@ -53,7 +53,7 @@ Before you begin, ensure you have the following installed:
 Install the project dependencies:
 
 ```
-npm ci
+npm install
 ```
 
 ### Database Setup
