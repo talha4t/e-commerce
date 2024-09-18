@@ -33,7 +33,7 @@ Before you begin, ensure you have the following installed:
 1. Clone the repository:
 
    ```
-   git clone https://github.com/talha4t/e-commerce-backend.git
+   git clone https://github.com/talha4t/e-commerce.git
    cd e-commerce-backend
    ```
 
