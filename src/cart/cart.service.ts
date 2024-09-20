@@ -132,7 +132,7 @@ export class CartService {
       });
 
       if (!cart) {
-        throw new NotFoundException("cart not found");
+        throw new NotFoundException("Cart not found");
       }
 
       // Calculate the total price of the items in the cart
