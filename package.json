@@ -47,7 +47,7 @@
     "cloudinary": "^2.7.0",
     "ioredis": "^5.4.1",
     "multer": "^2.1.1",
-    "nodemailer": "^7.0.11",
+    "nodemailer": "^8.0.5",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "redis": "^4.7.0",
@@ -83,7 +83,9 @@
   "overrides": {
     "glob": "^13.0.0",
     "mjml": "5.0.0-beta.1",
-    "ajv": "^8.18.0"
+    "ajv": "^8.18.0",
+    "lodash": "^4.18.1",
+    "path-to-regexp": "^8.4.2"
   },
   "jest": {
     "moduleFileExtensions": [
